@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>Wigen Blog</title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_859455_eaq7v6w8ktj.css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <div class="header-title">
+
+        </div>
+        <nav class="header-nav">
+            
+            <a href="/" class="header-nav-link" >
+                首页
+            </a>
+            
+
+            
+            <a href="/archives" class="header-nav-link">
+                归档
+            </a>
+            
+
+            
+            <a href="/tags" class="header-nav-link">
+                标签
+            </a>
+            
+
+            
+            <a href="/about/" class="header-nav-link">
+                关于
+            </a>
+            
+        </nav>
+    </div>
+</header>
+<header class="mobile-header">
+    <div class="mobile-nav">
+        <div class="mobile-nav-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="mobile-nav-title">
+            <a href="/" class="mobile-nav-title-link">Wigen's Blog</a>
+        </div>
+
+    </div>
+    <nav class="mobile-menu">
+        <ul class="mobile-menu-list">
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-home"></i>
+                <a href="/" class="mobile-nav-link">首页</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-archive"></i>
+                <a href="/archives" class="mobile-nav-link">归档</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-tag"></i>
+                <a href="/tags" class="mobile-nav-link">标签</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-about"></i>
+                <a href="/about/" class="mobile-nav-link">关于</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="main">
+    <div class="content-inner">
+        <div class="posts">
+    <article class="post-whole">
+        <div class="post-title">
+            <h2 class="title">深入理解JAVA虚拟机概览</h2>
+            <div class="post-meta">
+                <span class="post-time">2020-05-26</span>
+                
+                <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
+            </div>
+        </div>
+        <div class="post-toc" id="post-toc">
+    <strong class="post-toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、概述"><span class="toc-text">一、概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、JVM概览"><span class="toc-text">二、JVM概览</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-JVM内存"><span class="toc-text">2.1 JVM内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-类加载"><span class="toc-text">2.2 类加载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-jvm性能调优"><span class="toc-text">2.3 jvm性能调优</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、总结"><span class="toc-text">三、总结</span></a></li></ol>
+    <div class="back-to-top" id="back-to-top">
+        <a href="javascript:void(0);">回到顶部</a>
+    </div>
+</div>
+        <div class="post-content">
+            <p>相信对于《深入理解JAVA虚拟机》第二版这本书大家并不陌生，对于JAVA从业者来说是必读的书，面试也常常考察该知识点。最近也出了《深入理解JAVA虚拟机》第三版,此版本基于JAVA8。</p>
+<a id="more"></a>
+<h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><p>JVM (java virtual Machine) java虚拟机，jvm具有可移植性的平台特点，一份代码，到处可用，所以风靡到现在。以前由于机器的配置不一样，一份代码在这台机器上运行，但是放在别的机器上不能运行，导致开发成本大，所以JVM的横空出世不是没有道理，也是理所当然出现的。</p>
+<p>此书大概讲三部分:</p>
+<ul>
+<li>JVM内存</li>
+<li>类加载</li>
+<li>jvm性能调优</li>
+</ul>
+<h3 id="二、JVM概览"><a href="#二、JVM概览" class="headerlink" title="二、JVM概览"></a>二、JVM概览</h3><h4 id="2-1-JVM内存"><a href="#2-1-JVM内存" class="headerlink" title="2.1 JVM内存"></a>2.1 JVM内存</h4><ul>
+<li><p>JVM内存</p>
+<ul>
+<li><p>程序计数器<br>  <code>记录程序执行的地址</code></p>
+</li>
+<li><p>虚拟机栈<br>  <code>栈帧 就是运行的局部方法相关</code></p>
+</li>
+<li><p>本地方法栈<br>  <code>java native 方法</code></p>
+</li>
+<li><p>堆<br>  <code>主要存放对象和数组</code></p>
+</li>
+<li><p>方法区<br>  <code>主要存放类信息、常量池等</code></p>
+<p>有两个ERROR, OutOfMemoryError(内存溢出)和StackOverFlowError(栈溢出 XSS)</p>
+</li>
+</ul>
+</li>
+<li><p>对象回收</p>
+<ul>
+<li>判断回收算法 <ul>
+<li>引用计数法</li>
+<li>可达性分析GC ROOT</li>
+</ul>
+</li>
+<li>垃圾回收算法 <ul>
+<li>复制算法</li>
+<li>标记清除</li>
+<li>标记整理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>垃圾收集器</p>
+<ul>
+<li>Serial</li>
+<li>Serial Old</li>
+<li>Parnew</li>
+<li>parallel scanvage</li>
+<li>CMS</li>
+<li>G1</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-2-类加载"><a href="#2-2-类加载" class="headerlink" title="2.2 类加载"></a>2.2 类加载</h4><ul>
+<li>类加载过程<ul>
+<li>加载</li>
+<li>验证</li>
+<li>准备</li>
+<li>解析</li>
+<li>初始化</li>
+<li>销毁</li>
+</ul>
+</li>
+<li>类加载器<ul>
+<li>BootStrap Classloader<br><code>加载java的rt.jar</code></li>
+<li>Extension ClassLoader<br><code>加载extension包里的jar包</code></li>
+<li>Application Classloader<br><code>加载第三方jar包</code></li>
+</ul>
+</li>
+<li>双亲委派<br><code>先委托给父类加载器加载，父类加载器加载不到在委托给子类加载器加载</code><h4 id="2-3-jvm性能调优"><a href="#2-3-jvm性能调优" class="headerlink" title="2.3 jvm性能调优"></a>2.3 jvm性能调优</h4>掌握几个重要的命令<ul>
+<li>jps <code>查看java进程</code></li>
+<li>jmap <code>可以导dump文件</code></li>
+<li>jstat <code>查看jvm gc状态</code></li>
+<li>jinfo <code>查看jvm信息</code></li>
+<li>jstack <code>查看线程状态</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>多实践，多观察，遇到问题多总结。对于概念有个基本掌握，实际上对于问题的排查在实际的工作中更为重要。</p>
+
+        </div>
+        
+        <div class="post-tag">
+            
+            <a class="tag" href="/tags/JVM/" title="JVM">JVM</a>
+            
+        </div>
+        
+    </article>
+</div>
+<div class="paginator">
+    
+        
+            <a class="prev" href="/2020/05/28/netty%E5%AD%A6%E4%B9%A0%E6%80%BB%E8%A7%88/">
+                <i class="iconfont icon-prev"></i>
+                <span class="nav-default">netty学习总览</span>
+                <span class="nav-mobile">上一篇</span>
+            </a>
+        
+        
+            <a class="next" href="/2020/05/26/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
+                <span class="nav-default">原型模式</span>
+                <span class="nav-mobile">下一篇</span>
+                <i class="iconfont icon-next"></i>
+            </a>
+        
+    
+</div>
+<div id="comment-container"></div>
+    </div>
+</div>
+<footer class="footer-social">
+    
+    <a class="social-link" target="_blank" href="https://github.com/wigennn">
+        <i class="iconfont icon-github"></i>
+    </a>
+    
+
+    
+
+    
+
+    <div class="footer-copyright">
+        <p class="time-line">
+            &copy;
+            
+            
+                2018 -
+            
+            2020
+            &nbsp;<i class="iconfont icon-heart"></i>&nbsp;
+            <a target="_blank" href="https://github.com/iJinxin">Wigen</a>
+        </p>
+        <p class="theme-info">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme -
+            <a target="_blank" href="https://github.com/iJinxin/hexo-theme-sky">Sky</a>
+        </p>
+    </div>
+</footer>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    
+
+</script>
+</html>

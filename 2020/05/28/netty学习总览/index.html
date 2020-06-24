@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>Wigen Blog</title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_859455_eaq7v6w8ktj.css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <div class="header-title">
+
+        </div>
+        <nav class="header-nav">
+            
+            <a href="/" class="header-nav-link" >
+                首页
+            </a>
+            
+
+            
+            <a href="/archives" class="header-nav-link">
+                归档
+            </a>
+            
+
+            
+            <a href="/tags" class="header-nav-link">
+                标签
+            </a>
+            
+
+            
+            <a href="/about/" class="header-nav-link">
+                关于
+            </a>
+            
+        </nav>
+    </div>
+</header>
+<header class="mobile-header">
+    <div class="mobile-nav">
+        <div class="mobile-nav-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="mobile-nav-title">
+            <a href="/" class="mobile-nav-title-link">Wigen's Blog</a>
+        </div>
+
+    </div>
+    <nav class="mobile-menu">
+        <ul class="mobile-menu-list">
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-home"></i>
+                <a href="/" class="mobile-nav-link">首页</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-archive"></i>
+                <a href="/archives" class="mobile-nav-link">归档</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-tag"></i>
+                <a href="/tags" class="mobile-nav-link">标签</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-about"></i>
+                <a href="/about/" class="mobile-nav-link">关于</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="main">
+    <div class="content-inner">
+        <div class="posts">
+    <article class="post-whole">
+        <div class="post-title">
+            <h2 class="title">netty学习总览</h2>
+            <div class="post-meta">
+                <span class="post-time">2020-05-28</span>
+                
+                <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
+            </div>
+        </div>
+        <div class="post-toc" id="post-toc">
+    <strong class="post-toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、前言"><span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、netty核心类库介绍"><span class="toc-text">二、netty核心类库介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-JAVA-NIO"><span class="toc-text">2.1 JAVA NIO</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-Netty核心类库"><span class="toc-text">2.2 Netty核心类库</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、总结"><span class="toc-text">三、总结</span></a></li></ol>
+    <div class="back-to-top" id="back-to-top">
+        <a href="javascript:void(0);">回到顶部</a>
+    </div>
+</div>
+        <div class="post-content">
+            <h3 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h3><p>netty框架作为一款优秀的高性能的NIO通信框架，包括网络通信、多线程编程、序列化、反序列化、异步和同步编程模型、SSL/TLS安全、内存池、HTTP、MQTT等协议栈。</p>
+<a id="more"></a>
+<h3 id="二、netty核心类库介绍"><a href="#二、netty核心类库介绍" class="headerlink" title="二、netty核心类库介绍"></a>二、netty核心类库介绍</h3><h4 id="2-1-JAVA-NIO"><a href="#2-1-JAVA-NIO" class="headerlink" title="2.1 JAVA NIO"></a>2.1 JAVA NIO</h4><ul>
+<li>Channel<br>  <code>通道，负责读取写入，网络数据通过Channel读取和写入。与流不同的地方在于Channel是双向的，流只在一个方向上流动Inputstream和OutputStream。Channel是全双工的，同时支持读写操作。</code></li>
+<li>Buffer<br>  <code>所有数据都是通过缓冲区处理的，读取数据时，直接读取到缓冲区中，写入数据时，写入到缓冲区中。任何时候访问NIO中的数据，都是通过缓冲区进行操作.</code></li>
+<li>Selector<br>  <code>Selector不断轮询注册在其上的Channel，如果某个Channel有新的TCP连接接入，读写事件，channel就处于就绪状态，会被Selector轮询出来，通过SelectionKey获取就绪Channel的集合，进行后续IO操作。</code></li>
+</ul>
+<h4 id="2-2-Netty核心类库"><a href="#2-2-Netty核心类库" class="headerlink" title="2.2 Netty核心类库"></a>2.2 Netty核心类库</h4><ul>
+<li>ByteBuf</li>
+<li>Channel Unsafe</li>
+<li>ChannelPipeLine ChannelHandler</li>
+<li>EventLoop<br>  <code>主要负责IO读写, 普通TASK:调用NioEventLoop的execute()实现; 定时任务: 调用NIOEventLoop的schedule方法实现</code></li>
+<li>Future Promise<br>  <code>异步操作结果</code></li>
+</ul>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>重点掌握Netty服务端和客户端的创建，创建过程中使用到的核心类库和api，以及消息的发送、接收、消息的编解码。</p>
+
+        </div>
+        
+        <div class="post-tag">
+            
+            <a class="tag" href="/tags/netty/" title="netty">netty</a>
+            
+        </div>
+        
+    </article>
+</div>
+<div class="paginator">
+    
+        
+            <a class="prev" href="/2020/06/01/java%E7%9A%84%E5%BC%BA%E5%BC%95%E7%94%A8%E3%80%81%E8%BD%AF%E5%BC%95%E7%94%A8%E3%80%81%E5%BC%B1%E5%BC%95%E7%94%A8%E3%80%81%E8%99%9A%E5%BC%95%E7%94%A8/">
+                <i class="iconfont icon-prev"></i>
+                <span class="nav-default">java的强引用、软引用、弱引用、虚引用</span>
+                <span class="nav-mobile">上一篇</span>
+            </a>
+        
+        
+            <a class="next" href="/2020/05/26/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A6%82%E8%A7%88/">
+                <span class="nav-default">深入理解JAVA虚拟机概览</span>
+                <span class="nav-mobile">下一篇</span>
+                <i class="iconfont icon-next"></i>
+            </a>
+        
+    
+</div>
+<div id="comment-container"></div>
+    </div>
+</div>
+<footer class="footer-social">
+    
+    <a class="social-link" target="_blank" href="https://github.com/wigennn">
+        <i class="iconfont icon-github"></i>
+    </a>
+    
+
+    
+
+    
+
+    <div class="footer-copyright">
+        <p class="time-line">
+            &copy;
+            
+            
+                2018 -
+            
+            2020
+            &nbsp;<i class="iconfont icon-heart"></i>&nbsp;
+            <a target="_blank" href="https://github.com/iJinxin">Wigen</a>
+        </p>
+        <p class="theme-info">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme -
+            <a target="_blank" href="https://github.com/iJinxin/hexo-theme-sky">Sky</a>
+        </p>
+    </div>
+</footer>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    
+
+</script>
+</html>

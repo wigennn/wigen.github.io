@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>Wigen Blog</title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_859455_eaq7v6w8ktj.css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <div class="header-title">
+
+        </div>
+        <nav class="header-nav">
+            
+            <a href="/" class="header-nav-link" >
+                首页
+            </a>
+            
+
+            
+            <a href="/archives" class="header-nav-link">
+                归档
+            </a>
+            
+
+            
+            <a href="/tags" class="header-nav-link">
+                标签
+            </a>
+            
+
+            
+            <a href="/about/" class="header-nav-link">
+                关于
+            </a>
+            
+        </nav>
+    </div>
+</header>
+<header class="mobile-header">
+    <div class="mobile-nav">
+        <div class="mobile-nav-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="mobile-nav-title">
+            <a href="/" class="mobile-nav-title-link">Wigen's Blog</a>
+        </div>
+
+    </div>
+    <nav class="mobile-menu">
+        <ul class="mobile-menu-list">
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-home"></i>
+                <a href="/" class="mobile-nav-link">首页</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-archive"></i>
+                <a href="/archives" class="mobile-nav-link">归档</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-tag"></i>
+                <a href="/tags" class="mobile-nav-link">标签</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-about"></i>
+                <a href="/about/" class="mobile-nav-link">关于</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="main">
+    <div class="content-inner">
+        <div class="posts">
+    <article class="post-whole">
+        <div class="post-title">
+            <h2 class="title">NettyRpc源码分析(一)</h2>
+            <div class="post-meta">
+                <span class="post-time">2020-06-03</span>
+                
+                <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
+            </div>
+        </div>
+        <div class="post-toc" id="post-toc">
+    <strong class="post-toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、概览"><span class="toc-text">一、概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、NettyRpc总览"><span class="toc-text">二、NettyRpc总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、总结"><span class="toc-text">三、总结</span></a></li></ol>
+    <div class="back-to-top" id="back-to-top">
+        <a href="javascript:void(0);">回到顶部</a>
+    </div>
+</div>
+        <div class="post-content">
+            <h3 id="一、概览"><a href="#一、概览" class="headerlink" title="一、概览"></a>一、概览</h3><p>RPC, 即Remote Procedure Call(远程过程调用)，简单点说调用远程计算机服务，就像调用本地服务一样。</p>
+<a id="more"></a>
+<p>Rpc协议可基于HTTP协议或TCP协议，WebService就是基于HTTP协议的RPC,但是性能却不如基于Tcp协议的RPC。 </p>
+<p>有两个方面影响RPC的性能：1.传输方式 2.序列化方式</p>
+<p>根据网络四层架构(物理层、网络层、传输层、应用层)，TCP属于传输层协议，http属于应用层协议，在数据传输方面越底层，传输越快。</p>
+<p>java提供了默认的序列化方式，但是在高并发情况下，这种方式会带来性能瓶颈，所以还有一些优秀的序列化框架，如protobuf、kryo、hession、jackson、avro等。</p>
+<p>为了支持高并发，不能采用传统的阻塞IO,需要采用异步的IO即NIO。一般有通信框架有mina、netty等。</p>
+<p>需要将服务部署在分布式环境的不同节点上，通过服务注册的方式，让客户端自动发现当前可用的服务，并调用这些服务。这时候需要一种注册表的组件，注册分布式环境下所有的服务地址。(主机名与端口号)</p>
+<p>应用、服务、服务注册表关系如下图:<br><img src="/imgs/rpc%E5%85%B3%E7%B3%BB%E5%9B%BE.png" alt="关系图"></p>
+<h3 id="二、NettyRpc总览"><a href="#二、NettyRpc总览" class="headerlink" title="二、NettyRpc总览"></a>二、NettyRpc总览</h3><p>技术选型：<br>1.spring：bean管理<br>2.netty：nio<br>3.protobuf：序列化<br>4.zookeeper：注册中心</p>
+<p>代码结构如下：<br><img src="/imgs/NettyRpc_%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84.png" alt="代码结构"></p>
+<p>包含四个部分：<br>1.client<br>2.protocol<br>3.registry<br>4.server</p>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>这个轻量级的rpc框架小巧但是五脏俱全，很值得学习。</p>
+
+        </div>
+        
+        <div class="post-tag">
+            
+            <a class="tag" href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" title="源码分析">源码分析</a>
+            
+        </div>
+        
+    </article>
+</div>
+<div class="paginator">
+    
+        
+            <a class="prev" href="/2020/06/03/%E4%B8%80%E5%AE%9A%E8%A6%81%E5%BC%84%E6%98%8E%E7%99%BDspring-bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
+                <i class="iconfont icon-prev"></i>
+                <span class="nav-default">一定要弄明白spring bean的生命周期</span>
+                <span class="nav-mobile">上一篇</span>
+            </a>
+        
+        
+            <a class="next" href="/2020/06/02/spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD/">
+                <span class="nav-default">spring事务传播</span>
+                <span class="nav-mobile">下一篇</span>
+                <i class="iconfont icon-next"></i>
+            </a>
+        
+    
+</div>
+<div id="comment-container"></div>
+    </div>
+</div>
+<footer class="footer-social">
+    
+    <a class="social-link" target="_blank" href="https://github.com/wigennn">
+        <i class="iconfont icon-github"></i>
+    </a>
+    
+
+    
+
+    
+
+    <div class="footer-copyright">
+        <p class="time-line">
+            &copy;
+            
+            
+                2018 -
+            
+            2020
+            &nbsp;<i class="iconfont icon-heart"></i>&nbsp;
+            <a target="_blank" href="https://github.com/iJinxin">Wigen</a>
+        </p>
+        <p class="theme-info">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme -
+            <a target="_blank" href="https://github.com/iJinxin/hexo-theme-sky">Sky</a>
+        </p>
+    </div>
+</footer>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    
+
+</script>
+</html>
