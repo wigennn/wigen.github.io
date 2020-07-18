@@ -83,47 +83,43 @@
         <div class="posts">
     <article class="post-whole">
         <div class="post-title">
-            <h2 class="title">docker构建eureka-server</h2>
+            <h2 class="title">初识字节码编程</h2>
             <div class="post-meta">
-                <span class="post-time">2020-06-24</span>
+                <span class="post-time">2020-07-17</span>
                 
                 <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
         <div class="post-toc" id="post-toc">
     <strong class="post-toc-title">目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、目标"><span class="toc-text">一、目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、操作步骤"><span class="toc-text">二、操作步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、总结"><span class="toc-text">三、总结</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、前言"><span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、ASM"><span class="toc-text">二、ASM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、总结"><span class="toc-text">三、总结</span></a></li></ol>
     <div class="back-to-top" id="back-to-top">
         <a href="javascript:void(0);">回到顶部</a>
     </div>
 </div>
         <div class="post-content">
-            <h3 id="一、目标"><a href="#一、目标" class="headerlink" title="一、目标"></a>一、目标</h3><p>使用docker启动eureka-server.jar</p>
+            <h3 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h3><p>一个系统的监控从我之前了解到的都是在代码里做硬编码或者使用AOP的方式采集方法执行信息，出入参，异常，耗时去监控一个系统是否健康。但是这样的监控方式一旦大量使用，后期不好维护。</p>
 <a id="more"></a>
-
-<h3 id="二、操作步骤"><a href="#二、操作步骤" class="headerlink" title="二、操作步骤"></a>二、操作步骤</h3><p>1.eureka-server.jar生成<br><img src="/imgs/eureka-server-jar.png" alt="eureka-server.jar"></p>
-<p>2.Dockerfile编写<br><img src="/imgs/eureka-Dockerfile.png" alt="eureka-Dockerfile"></p>
-<p>3.上传jar包和Dockerfile</p>
-<pre><code>我是用的是idea上传文件, 配置如下</code></pre><p><img src="/imgs/idea-deploy-config.png" alt="configuration"></p>
-<pre><code>本地上传目录, 文件上传目标路径,然后对需要上传的文件右击deployment-upload</code></pre><p><img src="/imgs/idea-deploy-config-mappings.png" alt="mappings"></p>
-<pre><code>也可以使用idea ssh连接本地虚拟机, 上传Dockerfile和eureka中心的jar包</code></pre><p><img src="/imgs/docker-ssh.png" alt="ssh"></p>
-<p>4.生成eureka-server.jar的镜像image</p>
-<pre><code>在dockerfile目录使用命令 docker build -t eureka_v0.0.1 .  生成镜像 // 意思是 生成的镜像名是eureka_v0.0.1</code></pre><p><img src="/imgs/eureka-build-docker-image.png" alt="eureka-docker-image"></p>
-<pre><code>查看docker镜像(docker images命令)，已经有了刚生成的eureka_v0.0.1的镜像</code></pre><p><img src="/imgs/docker-images.png" alt="docker-images"></p>
-<p>5.启动eureka-server</p>
-<pre><code>docker镜像启动命令 docker run -p 8761:8761 -d eureka_v0.0.1
-然后可以使用命令 docker ps 查看在运行的容器</code></pre><p><img src="/imgs/docker-ps.png" alt="docker-run"> </p>
-<p>6.浏览器查看eureka-server是否运行</p>
-<pre><code>浏览器查看192.168.99.100:8769, 
-192.168.99.100是docker的default虚拟机的ip地址， 
-8769是Eureka的启动端口，docker run的时候需要 -p 8769:8769映射到外网接口，否则访问不了</code></pre><p><img src="/imgs/eureka-server-browser.png" alt="eureka-server-browser"></p>
-<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>通过此次实操，了解docker基本命令，dockerfile的编写，docker image的生成，image的启动及外网的映射</p>
+<p>后来了解到原来监控系统还能以更高级的方式实现。即使用javaagent与字节码操作结合实现。目前，字节码操作中目前有比较常见的三个框架，ASM,JAVASSIST,BYTE BUDDY, 这几个框架都能进行字节码操作，其中ASM更偏向与底层，需要了解字节码指令以及操作数栈等知识。</p>
+<h3 id="二、ASM"><a href="#二、ASM" class="headerlink" title="二、ASM"></a>二、ASM</h3><p>asm是一个java字节码操作框架。它能被用来动态生成类或者增强既有类的功能。asm直接产生二进制class文件，也可以在类被加载入java虚拟机之前动态改变类行为。java class被存储在严格格式定义的.class文件里，这些类拥有足够的元数据来解析类中的所有元素：类名称、方法、属性以及java字节码指令。asm从类文件读入信息后，能够改变类行为，分析类信息，甚至根据用户要求生成新类。</p>
+<p>javaagent，首先对这个有点印象是因为IDEA破解的时候在配置文件加了javaagent:xxx.jar(哈哈哈)，然后一般如果做非侵入式的监控系统的话，通常是使用javaagent+asm的。</p>
+<p>asm的用途</p>
+<ul>
+<li>类的代理 cglib</li>
+<li>混沌工程</li>
+<li>反向工程</li>
+<li>结合javaagent做非侵入式监控，方法耗时，日志，机器性能等现有类型产品springbootadmin</li>
+<li>软件破解</li>
+</ul>
+<p> 先来看下写个helloworld的字节码是什么样的，可以idea安装插件asm直接查看<br> <img src="/imgs/asm_helloworld.png" alt="asm_helloworld"></p>
+<p> 如果使用ASM呢？ASM的编码方式用到了访问者设计模式(不同角色看不同数据)。</p>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>打开了新世界，字节码编程还是蛮有趣的，可使用ASM框架实现非侵入式的系统监控。</p>
 
         </div>
         
         <div class="post-tag">
             
-            <a class="tag" href="/tags/docker/" title="docker">docker</a>
+            <a class="tag" href="/tags/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E7%A8%8B/" title="字节码编程">字节码编程</a>
             
         </div>
         
@@ -132,15 +128,9 @@
 <div class="paginator">
     
         
-            <a class="prev" href="/2020/07/17/%E5%88%9D%E8%AF%86%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E7%A8%8B/">
-                <i class="iconfont icon-prev"></i>
-                <span class="nav-default">初识字节码编程</span>
-                <span class="nav-mobile">上一篇</span>
-            </a>
         
-        
-            <a class="next" href="/2020/06/24/DockFile%E8%AF%A6%E8%A7%A3/">
-                <span class="nav-default">DockFile详解</span>
+            <a class="next" href="/2020/06/24/docker%E6%9E%84%E5%BB%BAeureka-server/">
+                <span class="nav-default">docker构建eureka-server</span>
                 <span class="nav-mobile">下一篇</span>
                 <i class="iconfont icon-next"></i>
             </a>
