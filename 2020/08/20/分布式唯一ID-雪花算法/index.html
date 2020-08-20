@@ -83,43 +83,58 @@
         <div class="posts">
     <article class="post-whole">
         <div class="post-title">
-            <h2 class="title">初识字节码编程</h2>
+            <h2 class="title">分布式唯一ID-雪花算法</h2>
             <div class="post-meta">
-                <span class="post-time">2020-07-17</span>
+                <span class="post-time">2020-08-20</span>
                 
                 <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
         <div class="post-toc" id="post-toc">
     <strong class="post-toc-title">目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、前言"><span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、ASM"><span class="toc-text">二、ASM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、总结"><span class="toc-text">三、总结</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分布式id"><span class="toc-text">分布式id</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么要使用分布式id？"><span class="toc-text">为什么要使用分布式id？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常见分布式id解决方案"><span class="toc-text">常见分布式id解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#雪花算法"><span class="toc-text">雪花算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#让我们来算算"><span class="toc-text">让我们来算算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#雪花算法的实现"><span class="toc-text">雪花算法的实现</span></a></li></ol></li></ol></li></ol></li></ol>
     <div class="back-to-top" id="back-to-top">
         <a href="javascript:void(0);">回到顶部</a>
     </div>
 </div>
         <div class="post-content">
-            <h3 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h3><p>一个系统的监控从我之前了解到的都是在代码里做硬编码或者使用AOP的方式采集方法执行信息，出入参，异常，耗时去监控一个系统是否健康。但是这样的监控方式一旦大量使用，后期不好维护。</p>
+            <h1 id="分布式id"><a href="#分布式id" class="headerlink" title="分布式id"></a>分布式id</h1><h3 id="为什么要使用分布式id？"><a href="#为什么要使用分布式id？" class="headerlink" title="为什么要使用分布式id？"></a>为什么要使用分布式id？</h3><p>在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品的系统中，数据日渐增长，对数据库的分库分表后需要有一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求；特别一点的如订单、骑手、优惠券也都需要有唯一ID做标识。此时一个能够生成全局唯一ID的系统是非常必要的</p>
 <a id="more"></a>
-<p>后来了解到原来监控系统还能以更高级的方式实现。即使用javaagent与字节码操作结合实现。目前，字节码操作中目前有比较常见的三个框架，ASM,JAVASSIST,BYTE BUDDY, 这几个框架都能进行字节码操作，其中ASM更偏向与底层，需要了解字节码指令以及操作数栈等知识。</p>
-<h3 id="二、ASM"><a href="#二、ASM" class="headerlink" title="二、ASM"></a>二、ASM</h3><p>asm是一个java字节码操作框架。它能被用来动态生成类或者增强既有类的功能。asm直接产生二进制class文件，也可以在类被加载入java虚拟机之前动态改变类行为。java class被存储在严格格式定义的.class文件里，这些类拥有足够的元数据来解析类中的所有元素：类名称、方法、属性以及java字节码指令。asm从类文件读入信息后，能够改变类行为，分析类信息，甚至根据用户要求生成新类。</p>
-<p>javaagent，首先对这个有点印象是因为IDEA破解的时候在配置文件加了javaagent:xxx.jar(哈哈哈)，然后一般如果做非侵入式的监控系统的话，通常是使用javaagent+asm的。</p>
-<p>asm的用途</p>
-<ul>
-<li>类的代理 cglib</li>
-<li>混沌工程</li>
-<li>反向工程</li>
-<li>结合javaagent做非侵入式监控，方法耗时，日志，机器性能等现有类型产品springbootadmin</li>
-<li>软件破解</li>
+
+<h3 id="常见分布式id解决方案"><a href="#常见分布式id解决方案" class="headerlink" title="常见分布式id解决方案"></a>常见分布式id解决方案</h3><ul>
+<li>UUID</li>
+<li>redis自增id</li>
+<li>雪花算法</li>
+<li>美团leaf</li>
+<li>数据库自增id</li>
 </ul>
-<p> 先来看下写个helloworld的字节码是什么样的，可以idea安装插件asm直接查看<br> <img src="/imgs/asm_helloworld.png" alt="asm_helloworld"></p>
-<p> 如果使用ASM呢？ASM的编码方式用到了访问者设计模式(不同角色看不同数据)。</p>
-<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>打开了新世界，字节码编程还是蛮有趣的，可使用ASM框架实现非侵入式的系统监控。</p>
+<h3 id="雪花算法"><a href="#雪花算法" class="headerlink" title="雪花算法"></a>雪花算法</h3><p>划分64位bit码 </p>
+<p>0 00000000000000000000000000000000000000000 00000 00000 000000000000</p>
+<ul>
+<li>第1位是符号位</li>
+<li>第2~42是时间的二进制格式</li>
+<li>第43~52是机器标识二进制格式</li>
+<li>第53~64是序号二进制格式</li>
+</ul>
+<h3 id="让我们来算算"><a href="#让我们来算算" class="headerlink" title="让我们来算算"></a>让我们来算算</h3><p>41位时间</p>
+<p>为什么时间是41位？</p>
+<pre><code>System.out.println(Long.toBinaryString(System.currentTimeMillis()).split(&quot;&quot;).length);
+输出结果是41</code></pre><p>如果时间全打满,支持多久?</p>
+<pre><code>我说的打满的意思是41位全为1
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i &lt; 41; i++) {
+    sb.append(&quot;1&quot;);
+}
+System.out.println((Long.parseLong(sb.toString(), 2) - System.currentTimeMillis()) / (1000*60*60*24*365));
+输出结果大约是还支持400+年</code></pre><p>10位机器码</p>
+<p>一般10位机器码会把它划分为，5位数据中心，5位机器标识</p>
+<h4 id="雪花算法的实现"><a href="#雪花算法的实现" class="headerlink" title="雪花算法的实现"></a>雪花算法的实现</h4><p>很简单，根据二进制移位(“&lt;&lt;”)并作或(“|”)运算 </p>
 
         </div>
         
         <div class="post-tag">
             
-            <a class="tag" href="/tags/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E7%A8%8B/" title="字节码编程">字节码编程</a>
+            <a class="tag" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" title="分布式">分布式</a>
             
         </div>
         
@@ -128,15 +143,9 @@
 <div class="paginator">
     
         
-            <a class="prev" href="/2020/08/20/%E5%88%86%E5%B8%83%E5%BC%8F%E5%94%AF%E4%B8%80ID-%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95/">
-                <i class="iconfont icon-prev"></i>
-                <span class="nav-default">分布式唯一ID-雪花算法</span>
-                <span class="nav-mobile">上一篇</span>
-            </a>
         
-        
-            <a class="next" href="/2020/06/24/docker%E6%9E%84%E5%BB%BAeureka-server/">
-                <span class="nav-default">docker构建eureka-server</span>
+            <a class="next" href="/2020/07/17/%E5%88%9D%E8%AF%86%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E7%A8%8B/">
+                <span class="nav-default">初识字节码编程</span>
                 <span class="nav-mobile">下一篇</span>
                 <i class="iconfont icon-next"></i>
             </a>
