@@ -83,58 +83,76 @@
         <div class="posts">
     <article class="post-whole">
         <div class="post-title">
-            <h2 class="title">分布式唯一ID-雪花算法</h2>
+            <h2 class="title">mysql优化查询方法</h2>
             <div class="post-meta">
-                <span class="post-time">2020-08-20</span>
+                <span class="post-time">2020-09-15</span>
                 
                 <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
         <div class="post-toc" id="post-toc">
     <strong class="post-toc-title">目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分布式id"><span class="toc-text">分布式id</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么要使用分布式id？"><span class="toc-text">为什么要使用分布式id？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常见分布式id解决方案"><span class="toc-text">常见分布式id解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#雪花算法"><span class="toc-text">雪花算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#让我们来算算"><span class="toc-text">让我们来算算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#雪花算法的实现"><span class="toc-text">雪花算法的实现</span></a></li></ol></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#思维导图"><span class="toc-text">思维导图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-使用索引"><span class="toc-text">1.使用索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-优化sql语句"><span class="toc-text">2.优化sql语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-优化数据库对象"><span class="toc-text">3.优化数据库对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-硬件优化"><span class="toc-text">4.硬件优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-mysql自身优化"><span class="toc-text">5.mysql自身优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-应用优化"><span class="toc-text">6.应用优化</span></a></li></ol>
     <div class="back-to-top" id="back-to-top">
         <a href="javascript:void(0);">回到顶部</a>
     </div>
 </div>
         <div class="post-content">
-            <h1 id="分布式id"><a href="#分布式id" class="headerlink" title="分布式id"></a>分布式id</h1><h3 id="为什么要使用分布式id？"><a href="#为什么要使用分布式id？" class="headerlink" title="为什么要使用分布式id？"></a>为什么要使用分布式id？</h3><p>在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品的系统中，数据日渐增长，对数据库的分库分表后需要有一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求；特别一点的如订单、骑手、优惠券也都需要有唯一ID做标识。此时一个能够生成全局唯一ID的系统是非常必要的</p>
+            <p>对于mysql数据库的，优化查询方法</p>
 <a id="more"></a>
 
-<h3 id="常见分布式id解决方案"><a href="#常见分布式id解决方案" class="headerlink" title="常见分布式id解决方案"></a>常见分布式id解决方案</h3><ul>
-<li>UUID</li>
-<li>redis自增id</li>
-<li>雪花算法</li>
-<li>美团leaf</li>
-<li>数据库自增id</li>
-</ul>
-<h3 id="雪花算法"><a href="#雪花算法" class="headerlink" title="雪花算法"></a>雪花算法</h3><p>划分64位bit码 </p>
-<p>0 00000000000000000000000000000000000000000 00000 00000 000000000000</p>
-<ul>
-<li>第1位是符号位</li>
-<li>第2~42是时间的二进制格式</li>
-<li>第43~52是机器标识二进制格式</li>
-<li>第53~64是序号二进制格式</li>
-</ul>
-<h3 id="让我们来算算"><a href="#让我们来算算" class="headerlink" title="让我们来算算"></a>让我们来算算</h3><p>41位时间</p>
-<p>为什么时间是41位？</p>
-<pre><code>System.out.println(Long.toBinaryString(System.currentTimeMillis()).split(&quot;&quot;).length);
-输出结果是41</code></pre><p>如果时间全打满,支持多久?</p>
-<pre><code>我说的打满的意思是41位全为1
-StringBuilder sb = new StringBuilder();
-for (int i = 0; i &lt; 41; i++) {
-    sb.append(&quot;1&quot;);
-}
-System.out.println((Long.parseLong(sb.toString(), 2) - System.currentTimeMillis()) / (1000*60*60*24*365));
-输出结果大约是还支持400+年</code></pre><p>10位机器码</p>
-<p>一般10位机器码会把它划分为，5位数据中心，5位机器标识</p>
-<h4 id="雪花算法的实现"><a href="#雪花算法的实现" class="headerlink" title="雪花算法的实现"></a>雪花算法的实现</h4><p>很简单，根据二进制移位(“&lt;&lt;”)并作或(“|”)运算 </p>
+<h2 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h2><p><img src="/imgs/mysql%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2.png" alt="mysql查询优化"></p>
+<h2 id="1-使用索引"><a href="#1-使用索引" class="headerlink" title="1.使用索引"></a>1.使用索引</h2><blockquote>
+<p>避免全表扫描</p>
+</blockquote>
+<blockquote>
+<p>在where | order by | group by 后面的列上建立索引</p>
+</blockquote>
+<h2 id="2-优化sql语句"><a href="#2-优化sql语句" class="headerlink" title="2.优化sql语句"></a>2.优化sql语句</h2><blockquote>
+<p>使用explain</p>
+</blockquote>
+<blockquote>
+<p>不要使用select * from t, *替换成需要返回的列</p>
+</blockquote>
+<blockquote>
+<p>不要在索引列计算和使用函数</p>
+</blockquote>
+<blockquote>
+<p>尽可能使用limit减少返回行数, 减少数据传输时间和带宽浪费 </p>
+</blockquote>
+<h2 id="3-优化数据库对象"><a href="#3-优化数据库对象" class="headerlink" title="3.优化数据库对象"></a>3.优化数据库对象</h2><blockquote>
+<p>优化表数据类型，可以使用select * from t procedure analyse()。<br>查看表数据类型优化建议，原则是能正确的表示和存储数据的最短类型，减少对磁盘空间、内存、网络io的空间占用.</p>
+</blockquote>
+<blockquote>
+<p>对表进行拆分 水平拆分（可以按一个字段取模分表）和垂直拆分（拆分列）</p>
+</blockquote>
+<blockquote>
+<p>使用中间表提高查询速度，中间表和原表结构一致，转移数据至中间表提高查询速度</p>
+</blockquote>
+<h2 id="4-硬件优化"><a href="#4-硬件优化" class="headerlink" title="4.硬件优化"></a>4.硬件优化</h2><blockquote>
+<p>CPU优化 使用多核和高频的CPU</p>
+</blockquote>
+<blockquote>
+<p>内存优化 使用更大的内存，尽可能多的分配内存给mysql做缓存</p>
+</blockquote>
+<blockquote>
+<p>磁盘IO优化 a.使用磁盘阵列 (RAID 0)(RAID 1)(RAID-0+1) b.调整磁盘调度算法，减少磁盘寻址时间</p>
+</blockquote>
+<h2 id="5-mysql自身优化"><a href="#5-mysql自身优化" class="headerlink" title="5.mysql自身优化"></a>5.mysql自身优化</h2><blockquote>
+<p>my.cnf配置文件参数优化, 如指定mysql查询缓冲区的大小,指定mysql允许的最大连接进程数</p>
+</blockquote>
+<h2 id="6-应用优化"><a href="#6-应用优化" class="headerlink" title="6.应用优化"></a>6.应用优化</h2><blockquote>
+<p>使用数据库连接池</p>
+</blockquote>
+<blockquote>
+<p>使用查询缓存</p>
+</blockquote>
 
         </div>
         
         <div class="post-tag">
             
-            <a class="tag" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" title="分布式">分布式</a>
+            <a class="tag" href="/tags/mysql/" title="mysql">mysql</a>
             
         </div>
         
@@ -143,15 +161,9 @@ System.out.println((Long.parseLong(sb.toString(), 2) - System.currentTimeMillis(
 <div class="paginator">
     
         
-            <a class="prev" href="/2020/09/15/mysql%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2%E6%96%B9%E6%B3%95/">
-                <i class="iconfont icon-prev"></i>
-                <span class="nav-default">mysql优化查询方法</span>
-                <span class="nav-mobile">上一篇</span>
-            </a>
         
-        
-            <a class="next" href="/2020/07/17/%E5%88%9D%E8%AF%86%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E7%A8%8B/">
-                <span class="nav-default">初识字节码编程</span>
+            <a class="next" href="/2020/08/20/%E5%88%86%E5%B8%83%E5%BC%8F%E5%94%AF%E4%B8%80ID-%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95/">
+                <span class="nav-default">分布式唯一ID-雪花算法</span>
                 <span class="nav-mobile">下一篇</span>
                 <i class="iconfont icon-next"></i>
             </a>
