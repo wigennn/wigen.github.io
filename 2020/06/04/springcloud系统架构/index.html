@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>Wigen Blog</title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_859455_eaq7v6w8ktj.css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <div class="header-title">
+
+        </div>
+        <nav class="header-nav">
+            
+            <a href="/" class="header-nav-link" >
+                首页
+            </a>
+            
+
+            
+            <a href="/archives" class="header-nav-link">
+                归档
+            </a>
+            
+
+            
+            <a href="/tags" class="header-nav-link">
+                标签
+            </a>
+            
+
+            
+            <a href="/about/" class="header-nav-link">
+                关于
+            </a>
+            
+        </nav>
+    </div>
+</header>
+<header class="mobile-header">
+    <div class="mobile-nav">
+        <div class="mobile-nav-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="mobile-nav-title">
+            <a href="/" class="mobile-nav-title-link">Wigen's Blog</a>
+        </div>
+
+    </div>
+    <nav class="mobile-menu">
+        <ul class="mobile-menu-list">
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-home"></i>
+                <a href="/" class="mobile-nav-link">首页</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-archive"></i>
+                <a href="/archives" class="mobile-nav-link">归档</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-tag"></i>
+                <a href="/tags" class="mobile-nav-link">标签</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-about"></i>
+                <a href="/about/" class="mobile-nav-link">关于</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="main">
+    <div class="content-inner">
+        <div class="posts">
+    <article class="post-whole">
+        <div class="post-title">
+            <h2 class="title">springcloud系统架构</h2>
+            <div class="post-meta">
+                <span class="post-time">2020-06-04</span>
+                
+                <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
+            </div>
+        </div>
+        <div class="post-toc" id="post-toc">
+    <strong class="post-toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、一般的服务系统架构"><span class="toc-text">一、一般的服务系统架构</span></a></li></ol>
+    <div class="back-to-top" id="back-to-top">
+        <a href="javascript:void(0);">回到顶部</a>
+    </div>
+</div>
+        <div class="post-content">
+            <h3 id="一、一般的服务系统架构"><a href="#一、一般的服务系统架构" class="headerlink" title="一、一般的服务系统架构"></a>一、一般的服务系统架构</h3><p>在常见的系统架构中，一般包含网关，认证中心、前后台，中间件，注册中心，配置中心，监控服务等。</p>
+<a id="more"></a>
+
+<p><img src="/imgs/springcloud%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.PNG" alt="系统架构"></p>
+<p>如上图所示, 一般包含以下组件服务:</p>
+<ul>
+<li><p>1.网关<br>  springcloud实现网关服务的组件：gateway，zuul</p>
+</li>
+<li><p>2.认证授权中心<br>  一般使用oauth2.0 security组件</p>
+</li>
+<li><p>3.注册中心<br>  springcloud注册中心组件: nacos, consul, eureka</p>
+<p>  传统的一般使用ZOOKEEPER作为注册中心</p>
+</li>
+<li><p>4.配置中心<br>  config, nacos, zookeeper, consul</p>
+</li>
+<li><p>5.前台</p>
+</li>
+<li><p>6.中台<br>  系统与系统之间通信一般是通过MQ或者rpc接口</p>
+<p>  传统的rpc组件有：dubbo</p>
+<p>  springcloud rpc组件：feign</p>
+<p>  当然接口可能出现不可调用的情况，此时需要接口熔断服务，可使用hystrix</p>
+<p>  有时候接口调用量非常大，需要限流，可使用网关限流</p>
+</li>
+<li><p>7.系统监控服务<br>  springbootadmin</p>
+</li>
+<li><p>8.调度中心<br>  xxl-job</p>
+</li>
+<li><p>9.缓存<br>  redis</p>
+</li>
+<li><p>10.消息<br>  rocketmq、kafka、rabbitmq、activemq等</p>
+</li>
+<li><p>11.数据库<br>  mysql</p>
+</li>
+</ul>
+
+        </div>
+        
+        <div class="post-tag">
+            
+            <a class="tag" href="/tags/spring-cloud/" title="spring cloud">spring cloud</a>
+            
+        </div>
+        
+    </article>
+</div>
+<div class="paginator">
+    
+        
+            <a class="prev" href="/2020/06/18/%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%BC%95%E6%93%8Eflowable/">
+                <i class="iconfont icon-prev"></i>
+                <span class="nav-default">工作流引擎flowable</span>
+                <span class="nav-mobile">上一篇</span>
+            </a>
+        
+        
+            <a class="next" href="/2020/06/04/SpringBootAdmin%E4%BB%8B%E7%BB%8D/">
+                <span class="nav-default">SpringBootAdmin介绍</span>
+                <span class="nav-mobile">下一篇</span>
+                <i class="iconfont icon-next"></i>
+            </a>
+        
+    
+</div>
+<div id="comment-container"></div>
+    </div>
+</div>
+<footer class="footer-social">
+    
+    <a class="social-link" target="_blank" href="https://github.com/wigennn">
+        <i class="iconfont icon-github"></i>
+    </a>
+    
+
+    
+
+    
+
+    <div class="footer-copyright">
+        <p class="time-line">
+            &copy;
+            
+            
+                2018 -
+            
+            2020
+            &nbsp;<i class="iconfont icon-heart"></i>&nbsp;
+            <a target="_blank" href="https://github.com/iJinxin">Wigen</a>
+        </p>
+        <p class="theme-info">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme -
+            <a target="_blank" href="https://github.com/iJinxin/hexo-theme-sky">Sky</a>
+        </p>
+    </div>
+</footer>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    
+
+</script>
+</html>

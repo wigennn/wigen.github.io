@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>Wigen Blog</title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_859455_eaq7v6w8ktj.css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <div class="header-title">
+
+        </div>
+        <nav class="header-nav">
+            
+            <a href="/" class="header-nav-link" >
+                首页
+            </a>
+            
+
+            
+            <a href="/archives" class="header-nav-link">
+                归档
+            </a>
+            
+
+            
+            <a href="/tags" class="header-nav-link">
+                标签
+            </a>
+            
+
+            
+            <a href="/about/" class="header-nav-link">
+                关于
+            </a>
+            
+        </nav>
+    </div>
+</header>
+<header class="mobile-header">
+    <div class="mobile-nav">
+        <div class="mobile-nav-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="mobile-nav-title">
+            <a href="/" class="mobile-nav-title-link">Wigen's Blog</a>
+        </div>
+
+    </div>
+    <nav class="mobile-menu">
+        <ul class="mobile-menu-list">
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-home"></i>
+                <a href="/" class="mobile-nav-link">首页</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-archive"></i>
+                <a href="/archives" class="mobile-nav-link">归档</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-tag"></i>
+                <a href="/tags" class="mobile-nav-link">标签</a>
+            </li>
+            <li class="mobile-menu-item">
+                <i class="iconfont icon-about"></i>
+                <a href="/about/" class="mobile-nav-link">关于</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="main">
+    <div class="content-inner">
+        <div class="posts">
+    <article class="post-whole">
+        <div class="post-title">
+            <h2 class="title">SpringBootAdmin介绍</h2>
+            <div class="post-meta">
+                <span class="post-time">2020-06-04</span>
+                
+                <span class="post-visit"> 阅读次数：<span id="busuanzi_value_page_pv"></span></span>
+            </div>
+        </div>
+        <div class="post-toc" id="post-toc">
+    <strong class="post-toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、springboot-admin简介"><span class="toc-text">一、springboot admin简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、为什么使用springboot-admin"><span class="toc-text">二、为什么使用springboot admin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、springboot-admin部署架构"><span class="toc-text">三、springboot admin部署架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、springboot-admin监控原理"><span class="toc-text">四、springboot admin监控原理</span></a></li></ol>
+    <div class="back-to-top" id="back-to-top">
+        <a href="javascript:void(0);">回到顶部</a>
+    </div>
+</div>
+        <div class="post-content">
+            <h3 id="一、springboot-admin简介"><a href="#一、springboot-admin简介" class="headerlink" title="一、springboot admin简介"></a>一、springboot admin简介</h3><p>Spring Boot Admin是一个开源社区项目，用于管理和监控SpringBoot应用程序。 应用程序作为Spring Boot Admin Client向为Spring Boot Admin Server注册（通过HTTP）或使用SpringCloud注册中心（例如Eureka，Consul）发现。</p>
+<a id="more"></a>
+
+<h3 id="二、为什么使用springboot-admin"><a href="#二、为什么使用springboot-admin" class="headerlink" title="二、为什么使用springboot admin"></a>二、为什么使用springboot admin</h3><p>sprinboot admin 监控，解决集群各节点监控问题。<br>非侵入式的，只需将springbootadmin server注册到注册中心上，各个节点暴露actuator状态，就可实现全集群节点监控。<br>springboot admin主要功能：</p>
+<ul>
+<li>1.健康状态</li>
+<li>2.上下线情况</li>
+<li>3.内存</li>
+<li>4.GC</li>
+<li>5.环境变量</li>
+<li>6.日志级别</li>
+<li>7.线程存储</li>
+<li>8.堆快照</li>
+<li>9.JMX</li>
+<li>10.监控指标</li>
+<li>11.endpoint</li>
+<li>12.系统参数</li>
+<li>13.CPU</li>
+<li>14.硬盘<br>……</li>
+</ul>
+<p>最主要是可视化, 如下图：<br><img src="/imgs/springbootadmin.PNG" alt="springbootadmin"></p>
+<h3 id="三、springboot-admin部署架构"><a href="#三、springboot-admin部署架构" class="headerlink" title="三、springboot admin部署架构"></a>三、springboot admin部署架构</h3><p>3.1结合注册中心</p>
+<ul>
+<li>server端<br>  注册到注册中心上如eureka</li>
+<li>client端<br>  各节点暴露监控状态，即配置文件中添加如下配置:<br>  ``management.endpoints.web.exposure.include=*<pre><code>management.endpoint.health.show-details=always``</code></pre>  如果没有集成client，是不支持JMX的</li>
+</ul>
+<p>3.2 客户端服务端模式<br>    客户端配置服务端地址，支持JMX</p>
+<h3 id="四、springboot-admin监控原理"><a href="#四、springboot-admin监控原理" class="headerlink" title="四、springboot admin监控原理"></a>四、springboot admin监控原理</h3><p><strong>actuator</strong></p>
+<pre><code>- env
+- info
+- health
+- dump
+......</code></pre><p>JMX</p>
+
+        </div>
+        
+        <div class="post-tag">
+            
+            <a class="tag" href="/tags/spring-cloud/" title="spring cloud">spring cloud</a>
+            
+        </div>
+        
+    </article>
+</div>
+<div class="paginator">
+    
+        
+            <a class="prev" href="/2020/06/04/springcloud%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">
+                <i class="iconfont icon-prev"></i>
+                <span class="nav-default">springcloud系统架构</span>
+                <span class="nav-mobile">上一篇</span>
+            </a>
+        
+        
+            <a class="next" href="/2020/06/03/%E4%B8%80%E5%AE%9A%E8%A6%81%E5%BC%84%E6%98%8E%E7%99%BDspring-bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
+                <span class="nav-default">一定要弄明白spring bean的生命周期</span>
+                <span class="nav-mobile">下一篇</span>
+                <i class="iconfont icon-next"></i>
+            </a>
+        
+    
+</div>
+<div id="comment-container"></div>
+    </div>
+</div>
+<footer class="footer-social">
+    
+    <a class="social-link" target="_blank" href="https://github.com/wigennn">
+        <i class="iconfont icon-github"></i>
+    </a>
+    
+
+    
+
+    
+
+    <div class="footer-copyright">
+        <p class="time-line">
+            &copy;
+            
+            
+                2018 -
+            
+            2020
+            &nbsp;<i class="iconfont icon-heart"></i>&nbsp;
+            <a target="_blank" href="https://github.com/iJinxin">Wigen</a>
+        </p>
+        <p class="theme-info">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme -
+            <a target="_blank" href="https://github.com/iJinxin/hexo-theme-sky">Sky</a>
+        </p>
+    </div>
+</footer>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    
+
+</script>
+</html>
